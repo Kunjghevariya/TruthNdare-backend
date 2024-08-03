@@ -5,10 +5,20 @@ import userRouter from './routes/user.routes.js';
 import cors from 'cors';
 
 const app = express();
+const allowedOrigins = [
+  'https://truthndare.netlify.app',
+  'http://localhost:8081'
+];
 
 // Configure CORS
 const corsOptions = {
-  origin: 'http://localhost:8081', // Replace with your frontend URL
+ origin: (origin, callback) => {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

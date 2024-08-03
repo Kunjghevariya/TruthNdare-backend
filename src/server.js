@@ -5,12 +5,11 @@ import { Server as socketIo } from 'socket.io';
 const app = express();
 const server = http.createServer(app);
 const io = new socketIo(server, {
-const cors = require('cors');
-app.use(cors({
+const corsOptions = {
   origin: 'https://truthndare.netlify.app',
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+};
+
+app.use(cors(corsOptions));
 
 
 

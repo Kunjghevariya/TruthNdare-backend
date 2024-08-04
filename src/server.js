@@ -13,7 +13,7 @@ const allowedOrigins = [
 
 // Configure CORS
 const corsOptions = {
- origin: (origin, callback) => {
+  origin: (origin, callback) => {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -26,7 +26,15 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-
+// Initialize Socket.io with CORS options
+const io = new socketIo(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  }
+});
 
 io.on('connection', (socket) => {
   console.log('A user connected');
@@ -38,8 +46,7 @@ io.on('connection', (socket) => {
 
   socket.on('start', (roomID) => {
     console.log(`Game started in room: ${roomID}`);
-    io.emit('start');
-    // io.to(roomID).emit('start');
+    io.to(roomID).emit('start'); // This emits the 'start' event to the specific room
   });
 
   socket.on('disconnect', () => {

@@ -5,12 +5,10 @@ import { Server as socketIo } from 'socket.io';
 const app = express();
 const server = http.createServer(app);
 const io = new socketIo(server, {
-const corsOptions = {
-  origin: 'https://truthndare.netlify.app',
-};
-
-app.use(cors(corsOptions));
-
+  cors: {
+    origin: "*",
+  },
+});
 
 
 

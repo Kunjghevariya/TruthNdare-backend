@@ -1,14 +1,30 @@
 import express from 'express';
 import http from 'http';
 import { Server as socketIo } from 'socket.io';
+import cors from 'cors';
 
 const app = express();
 const server = http.createServer(app);
-const io = new socketIo(server, {
-  cors: {
-    origin: "*",
+
+const allowedOrigins = [
+  'https://truthndare.netlify.app',
+  'http://localhost:8081'
+];
+
+// Configure CORS
+const corsOptions = {
+ origin: (origin, callback) => {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
   },
-});
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 
 

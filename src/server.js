@@ -10,28 +10,36 @@ const io = new socketIo(server, {
   },
 });
 
-
+// Store player names and their corresponding socket IDs
+const playerNames = {};
 
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  socket.on('joinRoom', (roomID) => {
+  socket.on('joinRoom', (data) => {
+    const { roomID, playerName } = data;
     socket.join(roomID);
-    console.log(`User joined room: ${roomID}`);
+    playerNames[socket.id] = playerName;
+    console.log(`User ${playerName} joined room: ${roomID}`);
   });
 
+  socket.on('sendMessage', ({ roomID, text }) => {
+    const playerName = playerNames[socket.id] || 'Anonymous';
+    console.log(`Message received in room ${roomID} from ${playerName}: ${text}`);
+    io.to(roomID).emit('message', { playerName, text });
+  });
   socket.on('start', (roomID) => {
     console.log(`Game started in room: ${roomID}`);
-    io.emit('start');
-    // io.to(roomID).emit('start');
+    io.to(roomID).emit('start');
   });
 
   socket.on('disconnect', () => {
     console.log('A user disconnected');
+    delete playerNames[socket.id];
   });
 });
 
-const PORT = 8002;
+const PORT = 8000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 export { io };

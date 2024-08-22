@@ -32,6 +32,11 @@ io.on('connection', (socket) => {
     console.log(`Game started in room: ${roomID}`);
     io.to(roomID).emit('start');
   });
+  socket.on('rotateWheel', (data) => {
+    console.log('rotateWheel event received:', data);
+    // Handle the event and possibly broadcast to other clients
+    io.emit('rotateWheel', data); // Example of broadcasting to all clients
+  });
 
   socket.on('disconnect', () => {
     console.log('A user disconnected');
@@ -39,7 +44,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = 8001;
+const PORT = 8000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 export { io };

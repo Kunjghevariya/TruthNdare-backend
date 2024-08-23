@@ -4,7 +4,6 @@ import { Server as socketIo } from 'socket.io';
 
 const app = express();
 const server = http.createServer(app);
-const allowedOrigins = ['http://localhost:3000', 'https://your-client-domain.com'];
 const io = new socketIo(server, {
   cors: {
    origin: (origin, callback) => {
@@ -30,16 +29,16 @@ io.on('connection', (socket) => {
     const { roomID, playerName } = data;
     socket.join(roomID);
     playerNames[socket.id] = playerName;
-    console.log(User ${playerName} joined room: ${roomID});
+    console.log(`User ${playerName} joined room: ${roomID}`);
   });
 
   socket.on('sendMessage', ({ roomID, text }) => {
     const playerName = playerNames[socket.id] || 'Anonymous';
-    console.log(Message received in room ${roomID} from ${playerName}: ${text});
+    console.log(`Message received in room ${roomID} from ${playerName}: ${text}`);
     io.to(roomID).emit('message', { playerName, text });
   });
   socket.on('start', (roomID) => {
-    console.log(Game started in room: ${roomID});
+    console.log(`Game started in room: ${roomID}`);
     io.to(roomID).emit('start');
   });
   socket.on('rotateWheel', (data) => {
@@ -55,6 +54,6 @@ io.on('connection', (socket) => {
 });
 
 const PORT = 8001;
-server.listen(PORT, () => console.log(Server running on port ${PORT}));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 export { io };

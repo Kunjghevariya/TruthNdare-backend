@@ -52,6 +52,12 @@ io.on('connection', (socket) => {
     delete playerNames[socket.id];
   });
 });
+io.engine.on("connection_error", (err) => {
+  console.log(err.req);      // the request object
+  console.log(err.code);     // the error code, for example 1
+  console.log(err.message);  // the error message, for example "Session ID unknown"
+  console.log(err.context);  // some additional error context
+});
 
 const PORT = 8001;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

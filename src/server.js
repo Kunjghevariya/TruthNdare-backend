@@ -1,21 +1,31 @@
 import express from 'express';
-import http from 'http';
+import https from 'https';
+import fs from 'fs';
 import { Server as socketIo } from 'socket.io';
 
 const app = express();
-const server = http.createServer(app);
-const allowedOrigins = ['http://localhost:8081', '*'];
+
+// SSL certificate and key files
+const sslOptions = {
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.crt'),
+};
+
+// Create an HTTPS server
+const server = https.createServer(sslOptions, app);
+
+const allowedOrigins = ['https://your-production-site.com', 'http://localhost:8081'];
 
 const io = new socketIo(server, {
   cors: {
-   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
 });
 
@@ -37,10 +47,12 @@ io.on('connection', (socket) => {
     console.log(`Message received in room ${roomID} from ${playerName}: ${text}`);
     io.to(roomID).emit('message', { playerName, text });
   });
+
   socket.on('start', (roomID) => {
     console.log(`Game started in room: ${roomID}`);
     io.to(roomID).emit('start');
   });
+
   socket.on('rotateWheel', (data) => {
     console.log('rotateWheel event received:', data);
     // Handle the event and possibly broadcast to other clients
@@ -52,6 +64,7 @@ io.on('connection', (socket) => {
     delete playerNames[socket.id];
   });
 });
+
 io.engine.on("connection_error", (err) => {
   console.log(err.req);      // the request object
   console.log(err.code);     // the error code, for example 1
@@ -59,7 +72,7 @@ io.engine.on("connection_error", (err) => {
   console.log(err.context);  // some additional error context
 });
 
-const PORT = 8001;
+const PORT = 8001; // HTTPS default port
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 export { io };

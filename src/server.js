@@ -4,7 +4,7 @@ import { Server as socketIo } from 'socket.io';
 
 const app = express();
 const server = http.createServer(app);
-const allowedOrigins = ['http://localhost:8081', 'https://your-client-domain.com'];
+const allowedOrigins = ['http://localhost:8081', '*'];
 
 const io = new socketIo(server, {
   cors: {
@@ -16,7 +16,6 @@ const io = new socketIo(server, {
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-
   },
 });
 

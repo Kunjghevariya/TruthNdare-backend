@@ -18,7 +18,7 @@ const app = express();
 
 
 const corsOptions = {
-    origin: ['http://localhost:8081', '*'], 
+    origin: ['http://localhost:8081', 'https://truthndare.netlify.app'], 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

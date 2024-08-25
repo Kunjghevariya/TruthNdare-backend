@@ -1,6 +1,6 @@
 import { Game } from '../model/game.model.js';
 import { Room } from '../model/room.model.js';
-import { io } from '../server.js';
+import { io } from '../index.js';
 import { ApiError } from '../utills/ApiError.js';
 import { asyncHandler } from '../utills/asyncHandler.js';
 

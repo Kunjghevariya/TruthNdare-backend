@@ -1,5 +1,5 @@
 import { Room } from '../model/room.model.js';
-import { io } from '../server.js';
+import { io } from '../index.js';
 import { ApiError } from '../utills/ApiError.js';
 import { ApiResponse } from '../utills/ApiResponse.js';
 import { asyncHandler } from '../utills/asyncHandler.js';

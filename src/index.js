@@ -71,6 +71,21 @@ io.on('connection', (socket) => {
         playerNames[socket.id] = playerName;
         console.log(`User ${playerName} joined room: ${roomID}`);
     });
+    socket.on('countdown', (seconds) => {
+
+    io.emit('countdown', seconds);
+
+
+    let countdown = seconds;
+    const interval = setInterval(() => {
+      countdown -= 1;
+      io.emit('countdown', countdown);
+      if (countdown <= 0) {
+        clearInterval(interval);
+        io.emit('rotateWheel');
+      }
+    }, 1000);
+  });
 
     socket.on('sendMessage', ({ roomID, text }) => {
         const playerName = playerNames[socket.id] || 'Anonymous';

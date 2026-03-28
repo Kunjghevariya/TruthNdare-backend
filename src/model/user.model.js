@@ -17,6 +17,7 @@ const userSchema = new Schema(
         email : {
             type: String,
             unique: true,
+            sparse: true,
             lowercase: true,
             trim: true
 
@@ -33,14 +34,18 @@ const userSchema = new Schema(
     }
 );
 userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) {
+    if (!this.isModified('password') || !this.password) {
       next();
+      return;
     }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   });
   
   userSchema.methods.isPasswordCorrect = async function(enteredPassword) {
+    if (!this.password) {
+      return false;
+    }
     return await bcrypt.compare(enteredPassword, this.password);
   };
   userSchema.methods.generateAccessToken = function () {
@@ -72,7 +77,5 @@ userSchema.methods.generateRefreshToken = function () {
   
 
 export const User = mongoose.model('User',userSchema);
-
-
 
 

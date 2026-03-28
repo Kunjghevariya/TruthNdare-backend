@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: truthndare-backend
+    env: node
+    plan: free
+    rootDir: TruthNdare-backend
+    buildCommand: npm install
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
